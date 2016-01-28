@@ -1,0 +1,69 @@
+Course Project "Coursera - Developing Data Products"
+========================================================
+author: Martin Kruse
+date: 01/28/2016
+autosize: true
+
+Exploration of the mtcars data set
+========================================================
+
+This presentation provides a brief overview about my course project for Coursera's
+"Developing Data Products" class. I developed several linear regression models, which analyze how the type of transmission (automatic or manual) influence a car's gas mileage. The data set providing the necessary information is the 'mtcars' data set. 
+
+The user can choose different prediction models and see the following outputs:
+
+- A first tab showing the result of the 'summary' function for the chosen regression model.
+- A second tab with four analytical plots describing the quality of the chosen regression model.
+
+Analytical Plots - Part I
+========================================================
+
+The base plotting system provides the possibility to generate analytical plots for regression models in a very simple way, however, these plots are often hard to read. I therefore decided to create the plots with the ggplot2 system. Below is an example for parts of the code of one of these plots.
+
+```{r, echo=FALSE}
+library(ggplot2)
+library(datasets)
+attach(mtcars)
+```
+
+```{r}
+mtcars$sre <- rstandard(lm(mpg ~ am + wt + qsec, data = mtcars))
+mtcars$hat <- round(hatvalues(lm(mpg ~ am + wt + qsec, data = mtcars)),3)
+g2 <- ggplot(mtcars, aes(x = hat, y= sre))
+g2 <- g2 + ylab("Standardized residuals")
+g2 <- g2 + xlab("Leverage")
+g2 <- g2 + geom_smooth(se=F, method="loess", colour = "red")
+```
+
+Analytical Plots - Part II
+========================================================
+
+The plot below is an example for one of the analytical plots. Parts of the code for it are shown on the previous slide.
+
+```{r, echo=FALSE}
+mtcars$sre <- rstandard(lm(mpg ~ am + wt + qsec, data = mtcars))
+    mtcars$hat <- round(hatvalues(lm(mpg ~ am + wt + qsec, data = mtcars)),3)
+    g2 <- ggplot(mtcars, aes(x = hat, y= sre))
+    g2 <- g2 + ylab("Standardized residuals")
+    g2 <- g2 + xlab("Leverage")
+    g2 <- g2 + geom_point(shape=21, size=2, fill = "red")
+    g2 <- g2 + geom_smooth(se=F, method="loess", colour = "red")
+    g2 <- g2 + ggtitle("Residuals vs Leverage Plot")
+    g2 <- g2 + theme(plot.title = element_text(size=10))
+    g2 <- g2 + theme(text = element_text(size=8))
+```
+
+```{r, echo=FALSE}
+g2
+```
+
+Summary
+========================================================
+
+The complete code for the shiny application be found here:
+
+- https://github.com/martinkruse/developing_data_products
+
+The application itself can be found here:
+
+- https://martinkruse.shinyapps.io/course_project/
